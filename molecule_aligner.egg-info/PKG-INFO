@@ -1,7 +1,7 @@
 Metadata-Version: 2.4
 Name: molecule_aligner
-Version: 0.1.0
-Summary: A Python package to align and merge multiple ASE trajectories based on a shared base molecule
+Version: 0.2.0
+Summary: A Python package to align and merge multiple ASE trajectories based on a shared base molecule, with single frame interpolation using IDPP
 Author-email: Molecule Aligner <author@example.com>
 License: MIT
 Project-URL: Homepage, https://github.com/example/molecule_aligner
@@ -12,5 +12,7 @@ Classifier: Programming Language :: Python :: 3.10
 Classifier: Programming Language :: Python :: 3.11
 Classifier: Operating System :: OS Independent
 Requires-Python: >=3.8
-Requires-Dist: ase
-Requires-Dist: numpy
+License-File: LICENSE
+Requires-Dist: ase>=3.22.0
+Requires-Dist: numpy>=1.20.0
+Dynamic: license-file

@@ -1,6 +1,9 @@
+LICENSE
+README.md
 pyproject.toml
 molecule_aligner/__init__.py
 molecule_aligner/align.py
+molecule_aligner/interpolate.py
 molecule_aligner/utils.py
 molecule_aligner.egg-info/PKG-INFO
 molecule_aligner.egg-info/SOURCES.txt

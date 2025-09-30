@@ -1,2 +1,2 @@
-ase
-numpy
+ase>=3.22.0
+numpy>=1.20.0

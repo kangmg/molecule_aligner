@@ -7,20 +7,20 @@ include = ["molecule_aligner*"]
 
 [project]
 name = "molecule_aligner"
-version = "0.1.0"
-description = "A Python package to align and merge multiple ASE trajectories based on a shared base molecule"
+version = "0.2.0"
+description = "A Python package to align and merge multiple ASE trajectories based on a shared base molecule, with single frame interpolation using IDPP"
 authors = [
     {name = "Molecule Aligner", email = "author@example.com"},
 ]
 dependencies = [
-    "ase",
-    "numpy",
+    "ase>=3.22.0",
+    "numpy>=1.20.0",
 ]
 requires-python = ">=3.8"
 license = {text = "MIT"}
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.8", 
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
