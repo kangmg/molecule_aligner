@@ -75,3 +75,9 @@ MDMin:    8 01:28:09        0.108180        0.153078
 MDMin:    9 01:28:09        0.093084        0.134049
        Step     Time          Energy          fmax
 MDMin:    0 01:28:09        0.019726        0.082323
+       Step     Time          Energy          fmax
+MDMin:    0 02:30:31        0.000000        0.000000
+       Step     Time          Energy          fmax
+MDMin:    0 02:30:31        0.000000        0.000000
+       Step     Time          Energy          fmax
+MDMin:    0 02:30:31        0.025887        0.059078
