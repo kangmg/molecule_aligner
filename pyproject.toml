@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["molecule_aligner*"]
+
+[project]
+name = "molecule_aligner"
+version = "0.1.0"
+description = "A Python package to align and merge multiple ASE trajectories based on a shared base molecule"
+authors = [
+    {name = "Molecule Aligner", email = "author@example.com"},
+]
+dependencies = [
+    "ase",
+    "numpy",
+]
+requires-python = ">=3.8"
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/example/molecule_aligner"
