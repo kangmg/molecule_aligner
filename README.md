@@ -43,7 +43,7 @@ pip install -e .
       </a>
     </td>
     <td>
-      <a href="https://colab.research.google.com/github/kangmg/molecule_aligner/blob/main/example_usage.ipy">
+      <a href="https://colab.research.google.com/github/kangmg/molecule_aligner/blob/main/example_usage.ipynb">
         <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
       </a>
     </td>
