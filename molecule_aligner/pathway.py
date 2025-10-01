@@ -125,33 +125,52 @@ def build_reaction_pathway(
 
 
 def _handle_interpolate_step(step: Dict, base_indices: List[int], global_settings: Dict) -> List[Dict]:
-    """Handle interpolation step."""
+    """Handle interpolation step with robust type checking."""
     
-    # Load source structures
+    # Load source structures with enhanced type safety
     from_source = step['from']
     to_source = step['to']
     
+    # Handle 'from' structure
     if isinstance(from_source, str):
         from_atoms = read(from_source)
-    else:
+        if not isinstance(from_atoms, Atoms):
+            raise TypeError(f"Loaded 'from' structure is not Atoms object: {type(from_atoms)}")
+    elif isinstance(from_source, Atoms):
         from_atoms = from_source
+    else:
+        raise TypeError(f"'from' must be file path (str) or Atoms object, got: {type(from_source)}")
         
+    # Handle 'to' structure  
     if isinstance(to_source, str):
         to_atoms = read(to_source)
-    else:
+        if not isinstance(to_atoms, Atoms):
+            raise TypeError(f"Loaded 'to' structure is not Atoms object: {type(to_atoms)}")
+    elif isinstance(to_source, Atoms):
         to_atoms = to_source
+    else:
+        raise TypeError(f"'to' must be file path (str) or Atoms object, got: {type(to_source)}")
     
-    # Get parameters
+    # Get parameters with validation
     n_frames = step.get('frames', global_settings.get('default_frames', 10))
     method = step.get('method', global_settings.get('default_method', 'idpp'))
     options = step.get('options', {})
     reverse = step.get('reverse', False)
     
+    # Validate n_frames
+    if not isinstance(n_frames, int) and n_frames != 'auto':
+        raise TypeError(f"n_frames must be int or 'auto', got: {type(n_frames)}")
+    
     # Handle 'auto' frame count
     if n_frames == 'auto':
         n_frames = _calculate_auto_frames(from_atoms, to_atoms, base_indices, step)
     
+    if n_frames < 2:
+        raise ValueError(f"n_frames must be at least 2, got: {n_frames}")
+    
     print(f"   🔄 Interpolating {n_frames} frames using {method}")
+    print(f"       From: {len(from_atoms)} atoms ({from_atoms.get_chemical_formula()})")
+    print(f"       To:   {len(to_atoms)} atoms ({to_atoms.get_chemical_formula()})")
     
     # Create interpolated trajectory
     interpolated_traj = create_interpolated_trajectory(
@@ -163,16 +182,24 @@ def _handle_interpolate_step(step: Dict, base_indices: List[int], global_setting
         **options
     )
     
+    # Validate interpolated trajectory
+    if not isinstance(interpolated_traj, list):
+        raise TypeError(f"create_interpolated_trajectory returned {type(interpolated_traj)}, expected list")
+    
+    for i, frame in enumerate(interpolated_traj):
+        if not isinstance(frame, Atoms):
+            raise TypeError(f"Interpolated frame {i} is not Atoms object: {type(frame)}")
+    
     # Apply reverse if requested
     if reverse:
         interpolated_traj = interpolated_traj[::-1]
-        print(f"   🔄 Reversed trajectory")
+        print(f"   🔄 Reversed interpolated trajectory")
     
     # Convert to reaction format (all frames from interpolation)
     reactions = []
-    for frame in interpolated_traj:
+    for i, frame in enumerate(interpolated_traj):
         reactions.append({
-            'traj': [frame],
+            'traj': [frame],  # Always single-element list for consistency
             'base_indices': base_indices,
             'reverse': False
         })
@@ -181,20 +208,26 @@ def _handle_interpolate_step(step: Dict, base_indices: List[int], global_setting
 
 
 def _handle_trajectory_step(step: Dict, base_indices: List[int], global_settings: Dict) -> List[Dict]:
-    """Handle trajectory step."""
+    """Handle trajectory step with robust type checking."""
     
     source = step['source']
     reverse = step.get('reverse', False)
     frames = step.get('frames', 'all')
     skip = step.get('skip', 1)
     
-    # Load trajectory
+    # Load trajectory with robust type checking
     if isinstance(source, str):
         trajectory = read(source, ':')
+        # Ensure trajectory is always a list
+        if not isinstance(trajectory, list):
+            trajectory = [trajectory]
     elif isinstance(source, list):
+        # Verify it's a list of Atoms objects
+        if not all(isinstance(item, Atoms) for item in source):
+            raise ValueError("trajectory source list must contain only Atoms objects")
         trajectory = source
     else:
-        raise ValueError("Trajectory source must be file path or list of Atoms")
+        raise ValueError("Trajectory source must be file path (str) or list of Atoms objects")
     
     print(f"   📂 Loaded trajectory: {len(trajectory)} frames")
     
@@ -220,11 +253,14 @@ def _handle_trajectory_step(step: Dict, base_indices: List[int], global_settings
         trajectory = trajectory[::-1]
         print(f"   🔄 Reversed trajectory")
     
-    # Convert to reaction format
+    # Convert to reaction format with type safety
     reactions = []
-    for frame in trajectory:
+    for i, frame in enumerate(trajectory):
+        if not isinstance(frame, Atoms):
+            raise TypeError(f"Frame {i} is not an Atoms object: {type(frame)}")
+        
         reactions.append({
-            'traj': [frame],
+            'traj': [frame],  # Always wrap single frame in list for consistency
             'base_indices': base_indices,
             'reverse': False
         })
