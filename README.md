@@ -1,244 +1,219 @@
-# Molecule Aligner
+# 🧬 Molecule Aligner
 
-A Python package that provides a programmatic API to align and merge multiple ASE trajectories based on a shared base molecule. Enhanced with **single frame interpolation capabilities** using ASE's IDPP method for generating chemically accurate reaction paths.
+A powerful Python package for creating complex molecular reaction pathways by seamlessly combining trajectory alignment, interpolation, and frame manipulation in a single, intuitive API.
 
-## 🆕 Version 0.2.0 - New Features!
+## 🚀 Overview
 
-- ✨ **Single Frame Interpolation**: Generate reaction paths from just two structures
-- 🧪 **IDPP Method**: Uses ASE's Image Dependent Pair Potential for chemically realistic paths  
-- 🔀 **Mixed Workflows**: Combine existing trajectories with interpolated segments
-- 📊 **Quality Assessment**: Built-in metrics for path analysis
-- 🎯 **Convenient API**: Simple functions for common use cases
-- 🔄 **Backward Compatible**: All existing code continues to work
+Molecule Aligner enables computational chemists to build sophisticated molecular reaction mechanisms from diverse sources - existing MD trajectories, single molecular structures, and interpolated transition paths. Whether you're studying catalytic cycles, protein conformational changes, or drug binding mechanisms, Molecule Aligner provides the tools to create smooth, chemically accurate reaction pathways.
 
-## Installation
+## ✨ Key Features
 
-Using uv:
+- **🎯 Unified API**: Single function handles all pathway construction needs
+- **🧪 Mixed Workflows**: Seamlessly combine trajectories, interpolations, and static frames
+- **⚗️ Chemical Accuracy**: IDPP interpolation for realistic transition paths
+- **🔄 Flexible Input**: Support for files, ASE objects, and various formats
+- **🛡️ Robust Operation**: Automatic fallbacks and comprehensive error handling
+- **📊 Quality Control**: Built-in assessment tools and method comparison
+
+## 🔧 Installation
+
+### Using uv (recommended)
+
 ```bash
+git clone <repository-url>
+cd molecule_aligner
+uv venv && source .venv/bin/activate
 uv pip install -e .
 ```
 
-Using pip:
+### Using pip
+
 ```bash
 pip install -e .
 ```
 
-## Quick Start Examples
+## 🎯 Quick Start
 
-### 🚀 Simple Reaction Path Generation (NEW!)
+### Basic Reaction Pathway
+
 ```python
-from molecule_aligner import create_reaction_path
+from molecule_aligner import build_reaction_pathway
 
-# Generate chemically accurate reaction path between two structures
-trajectory = create_reaction_path(
-    start_structure='reactant.xyz',
-    end_structure='product.xyz', 
-    base_indices=[0, 1, 2, 3],    # Atoms to keep aligned
-    n_frames=20,                  # Number of intermediate frames
-    method='idpp',                # Use IDPP for chemical accuracy
-    output_path='reaction_path.extxyz'
-)
-
-print(f"Generated {len(trajectory)} frame reaction path!")
-```
-
-### 🔬 Method Comparison
-```python
-from molecule_aligner.interpolate import compare_interpolation_methods
-
-# Compare different interpolation methods
-comparison = compare_interpolation_methods(
-    start_atoms=reactant,
-    end_atoms=product,
-    base_indices=[0, 1, 2],
-    methods=['linear', 'idpp']
-)
-
-for method, results in comparison.items():
-    quality = results['quality']
-    print(f"{method}: smoothness={quality['smoothness_score']:.3f}")
-```
-
-### 🔄 Mixed Trajectory + Interpolation Workflow
-```python
-from molecule_aligner import align_and_merge_reactions_enhanced
-
-reactions = [
-    {
-        # Existing multi-frame trajectory
-        'traj_path': 'binding.traj',
-        'reverse': False,
-        'base_indices': [0, 1, 2, 3, 4, 5]
-    },
-    {
-        # NEW: Single frame interpolation  
-        'start_frame_path': 'intermediate.xyz',
-        'end_frame_path': 'product.xyz',
-        'n_frames': 15,
-        'interpolation_method': 'idpp',
-        'interpolation_options': {
-            'fmax': 0.05,              # Tight convergence
-            'optimizer': 'LBFGS'       # High-quality optimizer
+# Create a complete reaction pathway with mixed inputs
+pathway = build_reaction_pathway(
+    steps=[
+        # Interpolate initial approach
+        {
+            'type': 'interpolate',
+            'from': 'reactant.xyz',
+            'to': 'intermediate.xyz',
+            'frames': 15,
+            'method': 'idpp'
         },
-        'base_indices': [0, 1, 2, 3, 4, 5]
-    }
-]
+        
+        # Use existing MD trajectory  
+        {
+            'type': 'trajectory',
+            'source': 'reaction_dynamics.traj',
+            'frames': 'all',
+            'reverse': False
+        },
+        
+        # Final product formation
+        {
+            'type': 'interpolate', 
+            'from': 'intermediate.xyz',
+            'to': 'product.xyz',
+            'frames': 12,
+            'method': 'idpp'
+        }
+    ],
+    base_indices=[0, 1, 2, 3, 4, 5],  # Atoms for alignment
+    output_path='complete_reaction.extxyz'
+)
 
-complete_trajectory = align_and_merge_reactions_enhanced(reactions)
+print(f"Generated pathway: {len(pathway)} frames")
 ```
 
-## Input Formats
-
-### Traditional Trajectory Format (Existing)
-```python
-{
-    'traj_path': 'trajectory.traj',    # OR 'traj': [Atoms(), ...]
-    'reverse': False,
-    'base_indices': [0, 1, 2, 3, 4]
-}
-```
-
-### NEW: Single Frame Interpolation Format
-```python
-{
-    'start_frame': Atoms(),            # OR 'start_frame_path': 'start.xyz'
-    'end_frame': Atoms(),              # OR 'end_frame_path': 'end.xyz'
-    'n_frames': 20,                    # Number of interpolated frames
-    'interpolation_method': 'idpp',    # 'linear' or 'idpp' 
-    'interpolation_options': {         # Method-specific options
-        'fmax': 0.1,                   # IDPP convergence criterion
-        'steps': 100,                  # IDPP optimization steps
-        'optimizer': 'LBFGS',          # 'MDMin', 'LBFGS', or 'FIRE'
-        'mic': False                   # Minimum image convention
-    },
-    'base_indices': [0, 1, 2, 3, 4],
-    'reverse': False
-}
-```
-
-## API Reference
-
-### Enhanced Functions (v0.2.0)
-
-#### `create_reaction_path(start_structure, end_structure, base_indices, ...)`
-Simple interface for generating reaction paths between two structures.
-
-#### `align_and_merge_reactions_enhanced(reactions, ...)`
-Enhanced version supporting both trajectories and interpolation.
-
-#### Quality Assessment
-```python
-from molecule_aligner.interpolate import interpolation_quality_check
-
-quality = interpolation_quality_check(trajectory, start_atoms, end_atoms)
-print(f"Path smoothness: {quality['smoothness_score']}")
-print(f"Total path length: {quality['total_path_length']} Å")
-```
-
-### Original Functions (Backward Compatible)
-
-#### `align_and_merge_reactions(reactions, ...)`
-Original function - works exactly as before in v0.1.0.
-
-## Interpolation Methods
-
-### Linear Interpolation
-- **Speed**: Very fast (~1000 frames/second)
-- **Use Case**: Simple transitions, quick previews
-- **Quality**: Basic, may create unrealistic intermediate structures
-
-### IDPP (Image Dependent Pair Potential)  
-- **Speed**: Moderate (~10-100 frames/second)
-- **Use Case**: Chemically accurate reaction paths
-- **Quality**: High - considers interatomic distances and avoids unphysical configurations
-- **Optimizers**: MDMin (default), LBFGS, FIRE
-
-## Quality Metrics
-
-The package provides comprehensive quality assessment:
+### Catalytic Cycle Example
 
 ```python
-quality_metrics = {
-    'n_frames': 20,
-    'start_rmsd': 0.0,              # Accuracy of start point
-    'end_rmsd': 0.0,                # Accuracy of end point  
-    'max_displacement': 0.5,        # Largest single step
-    'total_path_length': 15.2,      # Total path length (Å)
-    'smoothness_score': 0.8,        # Path smoothness (lower = smoother)
-    'avg_step_size': 0.76           # Average step size (Å)
-}
-```
-
-## Performance Characteristics
-
-| Method | Speed | Memory | Chemical Accuracy | Use Case |
-|--------|-------|---------|-------------------|----------|
-| Linear | ⚡⚡⚡ | ✅ | ⭐ | Quick previews |
-| IDPP | ⚡⚡ | ✅ | ⭐⭐⭐ | Reaction paths |
-
-## Dependencies
-
-- **ase** >= 3.22.0 (includes IDPP implementation)
-- **numpy** >= 1.20.0
-
-## Migration from v0.1.0
-
-**No changes required!** All existing code works exactly as before:
-
-```python
-# This still works identically
-from molecule_aligner import align_and_merge_reactions
-
-result = align_and_merge_reactions(reactions)  # Same as always
-```
-
-**To use new features**, import enhanced functions:
-
-```python  
-# New interpolation capabilities
-from molecule_aligner import create_reaction_path, align_and_merge_reactions_enhanced
-```
-
-## Examples and Use Cases
-
-### Protein-Ligand Binding
-```python
-# Model ligand approach to binding site
-binding_path = create_reaction_path(
-    start_structure='ligand_unbound.pdb',
-    end_structure='ligand_bound.pdb',
-    base_indices=[0, 1, 2, 3, 4],  # Protein backbone atoms
-    method='idpp',
-    n_frames=30
+# Complex catalytic mechanism
+catalytic_cycle = build_reaction_pathway(
+    steps=[
+        # Substrate binding
+        {'type': 'interpolate', 'from': 'catalyst.xyz', 'to': 'bound.xyz', 'frames': 20, 'method': 'idpp'},
+        
+        # Reaction dynamics (MD trajectory)  
+        {'type': 'trajectory', 'source': 'reaction_md.traj', 'frames': [100, 300], 'skip': 2},
+        
+        # Hold at transition state
+        {'type': 'frame', 'source': 'transition_state.xyz', 'repeat': 5},
+        
+        # Product release
+        {'type': 'interpolate', 'from': 'product_bound.xyz', 'to': 'catalyst.xyz', 'frames': 15, 'method': 'idpp'}
+    ],
+    base_indices=list(range(20)),
+    output_path='catalytic_cycle.extxyz'
 )
 ```
 
-### Conformational Changes
-```python
-# Model protein conformational transition
-conformational_path = create_reaction_path(
-    start_structure=closed_conformation,
-    end_structure=open_conformation, 
-    base_indices=active_site_atoms,
-    method='idpp',
-    fmax=0.02  # High accuracy
-)
+## 🎮 Step Types
+
+Molecule Aligner supports three fundamental step types for maximum flexibility:
+
+### `interpolate` - Smooth Transitions
+Create chemically accurate transitions between molecular structures using IDPP or linear methods.
+
+### `trajectory` - Existing Simulations  
+Incorporate MD trajectories, conformational sampling, or any multi-frame molecular data.
+
+### `frame` - Static States
+Add checkpoints, static periods, or important intermediate structures.
+
+> 📚 **For complete step reference and advanced examples, see [GUIDE.md](GUIDE.md)**
+
+## 🧪 Real-World Applications
+
+- **🔬 Reaction Mechanisms**: Complete multi-step organic and organometallic reactions
+- **💊 Drug Discovery**: Detailed protein-ligand binding pathways  
+- **🧬 Protein Dynamics**: Conformational changes and folding pathways
+- **⚡ Catalysis**: Full catalytic cycles from substrate binding to product release
+- **🔄 Reversible Processes**: Bidirectional reactions and equilibrium dynamics
+
+## 🛠️ Interpolation Methods
+
+### IDPP (Image Dependent Pair Potential)
+- **Accuracy**: Chemically realistic transition paths
+- **Use case**: High-quality reaction mechanisms
+- **Performance**: Slower but more accurate
+
+### Linear Interpolation  
+- **Speed**: Fast geometric interpolation
+- **Use case**: Prototyping and simple transitions
+- **Performance**: Very fast but less chemically accurate
+
+### Automatic Fallback
+Robust operation with automatic fallback from IDPP to linear if needed.
+
+## 📁 Input/Output Formats
+
+### Supported Inputs
+- ASE trajectory files (`.traj`)
+- XYZ files (`.xyz`) 
+- PDB files (`.pdb`)
+- Any ASE-supported format
+- Direct `Atoms` objects
+- Lists of `Atoms` objects
+
+### Output Formats
+- Extended XYZ with metadata (`.extxyz`)
+- ASE trajectory format (`.traj`)
+- Automatic format detection
+
+## 📊 Visualization
+
+```bash
+# ASE GUI (recommended)
+ase gui your_pathway.extxyz
+
+# VMD
+vmd your_pathway.extxyz  
+
+# PyMOL (convert first)
+ase convert your_pathway.extxyz your_pathway.pdb
 ```
 
-### Multi-Step Reaction Pathways
-```python
-# Complex reaction with multiple intermediates
-reactions = [
-    {'start_frame': reactant, 'end_frame': intermediate1, 'n_frames': 10, 'interpolation_method': 'idpp'},
-    {'start_frame': intermediate1, 'end_frame': intermediate2, 'n_frames': 8, 'interpolation_method': 'idpp'}, 
-    {'start_frame': intermediate2, 'end_frame': product, 'n_frames': 12, 'interpolation_method': 'idpp'}
-]
+## 🎓 Documentation
+
+- **[GUIDE.md](GUIDE.md)** - Complete step reference and advanced examples
+- **[ADVANCED_USAGE_GUIDE.md](ADVANCED_USAGE_GUIDE.md)** - Real-world applications and best practices
+- **[UNIFIED_API_PROPOSAL.md](UNIFIED_API_PROPOSAL.md)** - Technical design and future features
+
+## 🚀 Performance Tips
+
+- Use `'linear'` method for prototyping (1000x faster)
+- Use `'idpp'` for final high-quality results  
+- Start with fewer frames, increase for final production
+- Use `skip` parameter for large trajectories
+- Test with small systems first
+
+## 🤝 Contributing
+
+We welcome contributions! Please:
+
+1. Fork the repository
+2. Create a feature branch  
+3. Add tests for new functionality
+4. Submit a pull request
+
+## 📄 License
+
+MIT License - see LICENSE file for details.
+
+## 📚 Citation
+
+```bibtex
+@software{molecule_aligner,
+  title={Molecule Aligner: Unified Molecular Pathway Construction},
+  author={Your Name},
+  year={2024},
+  url={https://github.com/yourusername/molecule_aligner}
+}
 ```
 
-## Notes
+## 🔄 Version History
 
-- **IDPP Method**: Leverages ASE's proven implementation for production-quality results
-- **Memory Efficient**: Processes large molecules and long trajectories efficiently  
-- **Error Handling**: Graceful fallbacks and comprehensive validation
-- **File Format Support**: Reads various formats (.xyz, .traj, .pdb, etc.) via ASE
-- **Visualization Ready**: Output compatible with VMD, Ovito, ASE GUI
+### v0.2.0 (Current)
+- ✨ **NEW**: `build_reaction_pathway()` unified API
+- 🧪 IDPP interpolation for chemical accuracy
+- 🔄 Mixed workflow support (trajectories + interpolations + frames)
+- 🛡️ Enhanced error handling and fallbacks
+- 📚 Comprehensive documentation and examples
+
+### v0.1.0
+- Basic trajectory alignment and merging functionality
+
+---
+
+**Ready to build your molecular pathways? Check out [GUIDE.md](GUIDE.md) for detailed examples!** 🚀
