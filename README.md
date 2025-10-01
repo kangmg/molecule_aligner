@@ -2,31 +2,10 @@
 
 A powerful Python package for creating complex molecular reaction pathways by seamlessly combining trajectory alignment, interpolation, and frame manipulation in a single, intuitive API.
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>GIF Example</title>
-  <style>
-    .gif-box {
-      display: flex;
-      justify-content: center;  /* 가운데 정렬 */
-      margin: 20px 0;
-    }
-    .gif-box img {
-      max-width: 400px;   /* 최대 크기 제한 */
-      width: 100%;        /* 화면 크기에 맞춤 */
-      height: auto;       /* 비율 유지 */
-      border-radius: 8px; /* 살짝 둥글게 */
-    }
-  </style>
-</head>
-<body>
-  <div class="gif-box">
-    <img src="assets/ex.gif" alt="Example GIF">
-  </div>
-</body>
-</html>
+<p align="center">
+  <img src="asset/ex.gif" alt="Example GIF" width="400">
+</p>
+
 
 
 ## 🚀 Overview
