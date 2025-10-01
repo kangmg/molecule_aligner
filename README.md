@@ -1,22 +1,16 @@
 <p align="center">
-  <a href="https://colab.research.google.com/github/kangmg/molecule_aligner/blob/main/example_usage.ipynb" target="_parent">
-    <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
-  </a>
+  <img src="asset/ex.gif" alt="Example GIF" width="400">
 </p>
+
 
 # 🧬 Molecule Aligner
 
 A powerful Python package for creating complex molecular reaction pathways by seamlessly combining trajectory alignment, interpolation, and frame manipulation in a single, intuitive API.
 
-<p align="center">
-  <img src="asset/ex.gif" alt="Example GIF" width="400">
-</p>
-
-
 
 ## 🚀 Overview
 
-Molecule Aligner enables computational chemists to build sophisticated molecular reaction mechanisms from diverse sources - existing MD trajectories, single molecular structures, and interpolated transition paths. Whether you're studying catalytic cycles, protein conformational changes, or drug binding mechanisms, Molecule Aligner provides the tools to create smooth, chemically accurate reaction pathways.
+Molecule Aligner enables computational chemists to build sophisticated molecular reaction mechanisms from diverse sources - existing MD trajectories, single molecular structures, and interpolated transition paths. Whether you're studying catalytic cycles, multi-step reactions. Molecule Aligner provides the tools to create smooth and align the structures.
 
 
 ## 🔧 Installation
@@ -32,7 +26,29 @@ pip install -e .
 ```
 
 
+
 ## 🎯 Quick Start
+
+### Usage
+
+<table>
+  <tr>
+    <th>💬 Conversational AI Docs </th>
+    <th>🔗 Try it on Google Colab</th>
+  </tr>
+  <tr>
+    <td>
+      <a href="https://deepwiki.com/kangmg/molecule_aligner">
+        <img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki">
+      </a>
+    </td>
+    <td>
+      <a href="https://colab.research.google.com/github/kangmg/molecule_aligner/blob/main/example_usage.ipy">
+        <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+      </a>
+    </td>
+  </tr>
+</table>
 
 ### Basic Reaction Pathway
 
@@ -48,7 +64,7 @@ pathway = build_reaction_pathway(
             'from': 'reactant.xyz',
             'to': 'intermediate.xyz',
             'frames': 15,
-            'method': 'idpp'
+            'method': 'linear'
         },
         
         # Use existing MD trajectory  
